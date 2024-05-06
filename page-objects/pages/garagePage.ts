@@ -1,7 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { SignInForm } from '../forms/signInForm';
 import { randomEmail, password } from '../../test-data/credentials';
-import exp from 'constants';
 
 export class GaragePage {
     readonly page: Page;
@@ -10,7 +9,6 @@ export class GaragePage {
     readonly removeAccButton: Locator;
     readonly removeAccTitle: Locator;
     readonly removeButton: Locator;
-
 
     constructor(page: Page) {
         this.page = page;

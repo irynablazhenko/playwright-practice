@@ -11,7 +11,7 @@ export class HomePage {
         this.signInButton = page.getByRole('button', { name: 'Sign In' });
     };
 
-    async open(){
+    async open() {
         await this.page.goto('/');
         await expect(this.page.getByRole('heading', { name: 'Do more' })).toBeVisible();
     };

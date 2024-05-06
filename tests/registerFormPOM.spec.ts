@@ -1,5 +1,4 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../page-objects/pages/homePage';
+import { test, expect, Locator } from '@playwright/test';
 import { randomEmail, password } from '../test-data/credentials';
 import { GaragePage } from '../page-objects/pages/garagePage';
 import { SignUpForm } from '../page-objects/forms/signUpForm';
@@ -37,255 +36,213 @@ test.describe('Field Name validation', () => {
         signUpForm.open();
     });
 
-    test('Name is required', async ({ page }) => {
-        // const errorMessage = 'Name required';
-        // signUpForm.fieldValidation(signUpForm.nameField,'t', errorMessage);
-        await signUpForm.nameField.focus();
-        await signUpForm.nameField.blur();
-        await expect(signUpForm.errorMessage).toHaveText('Name required');
+    test.afterEach(async ({ page }) => {
         await expect(signUpForm.registerButton).toBeDisabled();
         await expect(signUpForm.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
     });
 
+    test('Name is required', async ({ page }) => {
+        const errorMessage = 'Name required';
+        signUpForm.fieldValidation(signUpForm.nameField, '', errorMessage);
+    });
+
     test('Name should be greater than 1', async ({ page }) => {
         const errorMessage = 'Name has to be from 2 to 20 characters long';
-        signUpForm.fieldValidation(signUpForm.nameField,'t', errorMessage);
+        signUpForm.fieldValidation(signUpForm.nameField, 't', errorMessage);
     });
 
     test('Name should be less than 20', async ({ page }) => {
         const errorMessage = 'Name has to be from 2 to 20 characters long';
-        signUpForm.fieldValidation(signUpForm.nameField,'qwertyuiopasdfghjklzx', errorMessage);
+        signUpForm.fieldValidation(signUpForm.nameField, 'qwertyuiopasdfghjklzx', errorMessage);
     });
 
     test('Name shouldn"t contain space', async ({ page }) => {
         const errorMessage = 'Name is invalid';
-        signUpForm.fieldValidation(signUpForm.nameField,'some name', errorMessage);
+        signUpForm.fieldValidation(signUpForm.nameField, 'some name', errorMessage);
     });
 
     test('Name should be only English alphabet', async ({ page }) => {
         const errorMessage = 'Name is invalid';
-        signUpForm.fieldValidation(signUpForm.nameField,'назва', errorMessage);
+        signUpForm.fieldValidation(signUpForm.nameField, 'назва', errorMessage);
     });
 });
 
-// test.describe('Field Last name validation', () => {
-//     let signUpForm: SignUpForm;
+test.describe('Field Last name validation', () => {
+    let signUpForm: SignUpForm;
 
-//     //go to the Register form
-//     test.beforeEach(async ({ page }) => {
-//         signUpForm = new SignUpForm(page);
-//         signUpForm.open();
-//         await page.locator('#signupName').fill('Test');
-//     });
+    //go to the Register form
+    test.beforeEach(async ({ page }) => {
+        signUpForm = new SignUpForm(page);
+        signUpForm.open();
+        await signUpForm.nameField.fill('Test');
+    });
+    test.afterEach(async ({ page }) => {
+        await expect(signUpForm.registerButton).toBeDisabled();
+        await expect(signUpForm.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    });
 
-//     test('Last name is required', async ({ page }) => {
-//         await page.locator('#signupLastName').focus();
-//         await page.locator('#signupLastName').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Last name required');
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Last name is required', async ({ page }) => {
+        const errorMessage = 'Last name required';
+        signUpForm.fieldValidation(signUpForm.lastNameField, '', errorMessage);
+    });
 
-//     test('Last name should be greater than 1', async ({ page }) => {
-//         await page.locator('#signupLastName').fill('t');
-//         await page.locator('#signupLastName').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Last name has to be from 2 to 20 characters long');
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Last name should be greater than 1', async ({ page }) => {
+        const errorMessage = 'Last name has to be from 2 to 20 characters long';
+        signUpForm.fieldValidation(signUpForm.lastNameField, 't', errorMessage);
+    });
 
-//     test('Last name should be less than 21', async ({ page }) => {
-//         await page.locator('#signupLastName').fill('qwertyuiopasdfghjklzx');
-//         await page.locator('#signupLastName').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Last name has to be from 2 to 20 characters long');
-//         await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Last name should be less than 21', async ({ page }) => {
+        const errorMessage = 'Last name has to be from 2 to 20 characters long';
+        signUpForm.fieldValidation(signUpForm.lastNameField, 'qwertyuiopasdfghjklzx', errorMessage);
+    });
 
-//     test('Last name shouldn"t contain space', async ({ page }) => {
-//         await page.locator('#signupLastName').fill('some name');
-//         await page.locator('#signupLastName').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Last name is invalid');
-//         await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Last name shouldn"t contain space', async ({ page }) => {
+        const errorMessage = 'Last name is invalid';
+        signUpForm.fieldValidation(signUpForm.lastNameField, 'some last name', errorMessage);
+    });
 
-//     test('Last name should be only English alphabet', async ({ page }) => {
-//         await page.locator('#signupLastName').fill('назва');
-//         await page.locator('#signupLastName').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Last name is invalid');
-//         await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
-// });
+    test('Last name should be only English alphabet', async ({ page }) => {
+        const errorMessage = 'Last name is invalid';
+        signUpForm.fieldValidation(signUpForm.lastNameField, 'фамілія', errorMessage);
+    });
+});
 
-// test.describe('Field Email validation', () => {
-//     let signUpForm: SignUpForm;
+test.describe('Field Email validation', () => {
+    let signUpForm: SignUpForm;
 
-//     //go to the Register form
-//     test.beforeEach(async ({ page }) => {
-//         signUpForm = new SignUpForm(page);
-//         signUpForm.open();
-//         await page.locator('#signupName').fill('Name');
-//         await page.locator('#signupLastName').fill('LastName');
-//     });
+    //go to the Register form
+    test.beforeEach(async ({ page }) => {
+        signUpForm = new SignUpForm(page);
+        signUpForm.open();
+        await signUpForm.nameField.fill('Name');
+        await signUpForm.lastNameField.fill('LastName');
+    });
 
-//     const invalidEmail = 'Email is incorrect';
-//     test('Email is required', async ({ page }) => {
-//         await page.locator('#signupEmail').focus();
-//         await page.locator('#signupEmail').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Email required');
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test.afterEach(async ({ page }) => {
+        await expect(signUpForm.registerButton).toBeDisabled();
+        await expect(signUpForm.emailField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    });
 
-//     test('Email should contain @', async ({ page }) => {
-//         await page.locator('#signupEmail').fill('test.test.test');
-//         await page.locator('#signupEmail').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidEmail);
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    const invalidEmail = 'Email is incorrect';
 
-//     test('Email shouldn"t contain space', async ({ page }) => {
-//         await page.locator('#signupEmail').fill('some name@gmail.com');
-//         await page.locator('#signupEmail').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidEmail);
-//         await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Email is required', async ({ page }) => {
+        const errorMessage = 'Email required';
+        signUpForm.fieldValidation(signUpForm.emailField, '', errorMessage);
+    });
 
-//     test('Email should contain a few symbols and a dot after @', async ({ page }) => {
-//         await page.locator('#signupEmail').fill('name@gmailcom');
-//         await page.locator('#signupEmail').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidEmail);
-//         await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
-// });
+    test('Email should contain @', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.emailField, 'test.test.test', invalidEmail);
+    });
 
-// test.describe('Field Password validation', () => {
-//     let signUpForm: SignUpForm;
+    test('Email shouldn"t contain space', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.emailField, 'some name@gmail.com', invalidEmail);
+    });
 
-//     //go to the Register form
-//     test.beforeEach(async ({ page }) => {
-//         signUpForm = new SignUpForm(page);
-//         signUpForm.open();
-//         await page.locator('#signupName').fill('Name');
-//         await page.locator('#signupLastName').fill('LastName');
-//         const randomEmail = () => {
-//             return 'iryna.blazhenko+aqa' + Math.floor(Math.random() * 500).toString() + '@email.com';
-//         };
-//         const rEmail = randomEmail();
-//         await page.locator('#signupEmail').fill(rEmail);
-//     });
+    test('Email should contain a few symbols and a dot after @', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.emailField, 'name@gmailcom', invalidEmail);
+    });
+});
 
-//     const invalidPassword = 'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter';
+test.describe('Field Password validation', () => {
+    let signUpForm: SignUpForm;
 
-//     test('Password is required', async ({ page }) => {
-//         await page.locator('#signupPassword').focus();
-//         await page.locator('#signupPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Password required');
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    //go to the Register form
+    test.beforeEach(async ({ page }) => {
+        signUpForm = new SignUpForm(page);
+        signUpForm.open();
+        await signUpForm.nameField.fill('Name');
+        await signUpForm.lastNameField.fill('LastName');
+        await signUpForm.emailField.fill(randomEmail);
+    });
 
-//     test('Password should be greater than 7', async ({ page }) => {
-//         await page.locator('#signupPassword').fill('Passw1@');
-//         await page.locator('#signupPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidPassword);
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test.afterEach(async ({ page }) => {
+        await expect(signUpForm.registerButton).toBeDisabled();
+        await expect(signUpForm.passwordField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    });
 
-//     test('Password should be less than 16', async ({ page }) => {
-//         await page.locator('#signupPassword').fill('P a s s w o rd1@');
-//         await page.locator('#signupPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidPassword);
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    const invalidPassword = 'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter';
 
-//     test('Password should contain minimun 1 integer', async ({ page }) => {
-//         await page.locator('#signupPassword').fill('Password@');
-//         await page.locator('#signupPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidPassword);
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Password is required', async ({ page }) => {
+        const errorMessage = 'Password required';
+        signUpForm.fieldValidation(signUpForm.passwordField, '', errorMessage);
+    });
 
-//     test('Password should contain minimum 1 capital letter', async ({ page }) => {
-//         await page.locator('#signupPassword').fill('password1@');
-//         await page.locator('#signupPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidPassword);
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+    test('Password should be greater than 7', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.passwordField, 'Passw1@', invalidPassword);
+    });
 
-//     test('Password should contain minimum 1 small letter', async ({ page }) => {
-//         await page.locator('#signupPassword').fill('PASSWORD1@');
-//         await page.locator('#signupPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidPassword);
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
-// });
+    test('Password should be less than 16', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.passwordField, 'P a s s w o rd1@', invalidPassword);
+    });
 
-// test.describe('Field Re-enter password validation', () => {
-//     let signUpForm: SignUpForm;
+    test('Password should contain minimun 1 integer', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.passwordField, 'Password@', invalidPassword);
+    });
 
-//     //go to the Register form
-//     test.beforeEach(async ({ page }) => {
-//         signUpForm = new SignUpForm(page);
-//         signUpForm.open();
-//         await page.locator('#signupName').fill('Name');
-//         await page.locator('#signupLastName').fill('LastName');
-//         const randomEmail = () => {
-//             return 'iryna.blazhenko+aqa' + Math.floor(Math.random() * 500).toString() + '@email.com';
-//         };
-//         const rEmail = randomEmail();
-//         await page.locator('#signupEmail').fill(rEmail);
-//         await page.locator('#signupPassword').fill('Password1@');
-//     });
+    test('Password should contain minimum 1 capital letter', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.passwordField, 'password1@', invalidPassword);
+    });
 
-//     const invalidRePassword = 'Passwords do not match';
+    test('Password should contain minimum 1 small letter', async ({ page }) => {
+        signUpForm.fieldValidation(signUpForm.passwordField, 'PASSWORD1@', invalidPassword);
+    });
+});
 
-//     test('Re-enter password is required', async ({ page }) => {
-//         await page.locator('#signupRepeatPassword').focus();
-//         await page.locator('#signupRepeatPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText('Re-enter password required');
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupRepeatPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
+test.describe('Field Re-enter password validation', () => {
+    let signUpForm: SignUpForm;
 
-//     test('Re-entered password doesn"t match the Password', async ({ page }) => {
-//         await page.locator('#signupRepeatPassword').fill('Passwwor1@');
-//         await page.locator('#signupRepeatPassword').blur();
-//         await expect(page.locator('//form/div/div/p')).toHaveText(invalidRePassword);
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//         await expect(page.locator('#signupRepeatPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//     });
-// });
+    //go to the Register form
+    test.beforeEach(async ({ page }) => {
+        signUpForm = new SignUpForm(page);
+        signUpForm.open();
+        await signUpForm.nameField.fill('Name');
+        await signUpForm.lastNameField.fill('LastName');
+        await signUpForm.emailField.fill(randomEmail);
+        await signUpForm.passwordField.fill(password);
+    });
 
-// test.describe('Negative scenario with all invalid fields', () => {
-//     let signUpForm: SignUpForm;
+    test.afterEach(async ({ page }) => {
+        await expect(signUpForm.registerButton).toBeDisabled();
+        await expect(signUpForm.repeatPasswordField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    });
 
-//     //go to the Register form
-//     test.beforeEach(async ({ page }) => {
-//         signUpForm = new SignUpForm(page);
-//         signUpForm.open();
-//     });
+    test('Re-enter password is required', async ({ page }) => {
+        const errorMessage = 'Re-enter password required';
+        signUpForm.fieldValidation(signUpForm.repeatPasswordField, '', errorMessage);
+    });
 
-//     test('All fields are invalid', async ({ page }) => {
-//         await page.locator('#signupName').fill('Te st');
-//         await page.locator('#signupLastName').fill(' User');
-//         await page.locator('#signupEmail').fill('Email');
-//         await page.locator('#signupPassword').fill('password1!');
-//         await page.locator('#signupRepeatPassword').fill('Password1!');
-//         await page.locator('#signupRepeatPassword').blur();
-//         await expect(page.locator('(//form/div/div)[1]/p')).toHaveText('Name is invalid');
-//         await expect(page.locator('#signupName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//         await expect(page.locator('(//form/div/div)[2]/p')).toHaveText('Last name is invalid');
-//         await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//         await expect(page.locator('(//form/div/div)[3]/p')).toHaveText('Email is incorrect');
-//         await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//         await expect(page.locator('(//form/div/div)[4]/p')).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
-//         await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//         await expect(page.locator('(//form/div/div)[5]/p')).toHaveText('Passwords do not match');
-//         await expect(page.locator('#signupRepeatPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-//         await expect(page.locator('button', { hasText: 'Register' })).toBeDisabled();
-//     });
+    test('Re-entered password doesn"t match the Password', async ({ page }) => {
+        const errorMessage = 'Passwords do not match';
+        signUpForm.fieldValidation(signUpForm.repeatPasswordField, 'Passwwor1@', errorMessage);
+    });
+});
 
-// })
+test.describe('Negative scenario with all invalid fields', () => {
+    let signUpForm: SignUpForm;
+
+    //go to the Register form
+    test.beforeEach(async ({ page }) => {
+        signUpForm = new SignUpForm(page);
+        signUpForm.open();
+    });
+
+    test('All fields are invalid', async ({ page }) => {
+        await signUpForm.nameField.fill('Te st');
+        await signUpForm.lastNameField.fill(' User');
+        await signUpForm.emailField.fill('Email');
+        await signUpForm.passwordField.fill('password1!');
+        await signUpForm.repeatPasswordField.fill('Password1!');
+        await signUpForm.repeatPasswordField.blur();
+        await expect(page.locator('(//form/div/div)[1]/p')).toHaveText('Name is invalid');
+        await expect(signUpForm.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(page.locator('(//form/div/div)[2]/p')).toHaveText('Last name is invalid');
+        await expect(signUpForm.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(page.locator('(//form/div/div)[3]/p')).toHaveText('Email is incorrect');
+        await expect(signUpForm.emailField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(page.locator('(//form/div/div)[4]/p')).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
+        await expect(signUpForm.passwordField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(page.locator('(//form/div/div)[5]/p')).toHaveText('Passwords do not match');
+        await expect(signUpForm.repeatPasswordField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(signUpForm.registerButton).toBeDisabled();
+    });
+})

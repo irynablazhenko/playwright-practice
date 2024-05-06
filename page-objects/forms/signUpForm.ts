@@ -11,6 +11,7 @@ export class SignUpForm {
     readonly registerButton: Locator;
     readonly errorMessage: Locator;
     readonly formHeader: Locator;
+    readonly errorMessages: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -22,6 +23,7 @@ export class SignUpForm {
         this.registerButton = page.locator('button', { hasText: 'Register' });
         this.errorMessage = page.locator('//form/div/div/p');
         this.formHeader = page.getByRole('heading', { name: 'Registration' });
+        this.errorMessages = page.locator('//form/div/div');
     };
 
     async open() {
@@ -42,11 +44,14 @@ export class SignUpForm {
         await expect(this.page.getByRole('heading', { name: 'Garage' })).toBeVisible();
     };
 
-    async fieldValidation(locator: Locator, value: string, errorMessage: string){
-        await locator.fill(value);
+    async fieldValidation(locator: Locator, value: string, errorMessage: string) {
+        if (value) {
+            await locator.fill(value)
+        }
+        else {
+            await locator.focus();
+        }
         await locator.blur();
         await expect(this.errorMessage).toHaveText(errorMessage);
-        await expect(this.registerButton).toBeDisabled();
-        await expect(locator).toHaveCSS('border-color', 'rgb(220, 53, 69)');
     };
 }
