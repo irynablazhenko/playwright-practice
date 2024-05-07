@@ -233,16 +233,21 @@ test.describe('Negative scenario with all invalid fields', () => {
         await signUpForm.passwordField.fill('password1!');
         await signUpForm.repeatPasswordField.fill('Password1!');
         await signUpForm.repeatPasswordField.blur();
-        await expect(page.locator('(//form/div/div)[1]/p')).toHaveText('Name is invalid');
-        await expect(signUpForm.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(page.locator('(//form/div/div)[2]/p')).toHaveText('Last name is invalid');
-        await expect(signUpForm.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(page.locator('(//form/div/div)[3]/p')).toHaveText('Email is incorrect');
-        await expect(signUpForm.emailField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(page.locator('(//form/div/div)[4]/p')).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
-        await expect(signUpForm.passwordField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(page.locator('(//form/div/div)[5]/p')).toHaveText('Passwords do not match');
-        await expect(signUpForm.repeatPasswordField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        const errors = ['Name is invalid',
+            'Last name is invalid',
+            'Email is incorrect',
+            'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter',
+            'Passwords do not match'];
+        const fields = [signUpForm.nameField,
+            signUpForm.lastNameField,
+            signUpForm.emailField,
+            signUpForm.passwordField,
+            signUpForm.repeatPasswordField];
+        for (let i = 1; i <= 5; i++) {
+            await expect(page.locator(`(//form/div/div)[${i}]/p`)).toHaveText(errors[i - 1]);
+            console.log(page.locator(`(//form/div/div)[${i}]/p`));
+            await expect(fields[i - 1]).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        }
         await expect(signUpForm.registerButton).toBeDisabled();
     });
 })
