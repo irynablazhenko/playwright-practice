@@ -38,26 +38,26 @@ test.describe('Field Name validation', () => {
 
     test('Name is required', async ({ page }) => {
         const errorMessage = 'Name required';
-        signUpForm.fieldValidation2(signUpForm.nameField, '', errorMessage);
+        await signUpForm.fieldValidation2(signUpForm.nameField, '', errorMessage);
     });
 
     test('Name should be greater than 1', async ({ page }) => {
         const errorMessage = 'Name has to be from 2 to 20 characters long';
-        signUpForm.fieldValidation2(signUpForm.nameField, 't', errorMessage);
+        await signUpForm.fieldValidation2(signUpForm.nameField, 't', errorMessage);
     });
 
     test('Name should be less than 20', async ({ page }) => {
         const errorMessage = 'Name has to be from 2 to 20 characters long';
-        signUpForm.fieldValidation2(signUpForm.nameField, 'qwertyuiopasdfghjklzx', errorMessage);
+        await signUpForm.fieldValidation2(signUpForm.nameField, 'qwertyuiopasdfghjklzx', errorMessage);
     });
 
     test('Name shouldn"t contain space', async ({ page }) => {
         const errorMessage = 'Name is invalid';
-        signUpForm.fieldValidation2(signUpForm.nameField, 'some name', errorMessage);
+        await signUpForm.fieldValidation2(signUpForm.nameField, 'some name', errorMessage);
     });
 
     test('Name should be only English alphabet', async ({ page }) => {
         const errorMessage = 'Name is invalid';
-        signUpForm.fieldValidation2(signUpForm.nameField, 'назва', errorMessage);
+        await signUpForm.fieldValidation2(signUpForm.nameField, 'назва', errorMessage);
     });
 });
