@@ -54,17 +54,4 @@ export class SignUpForm {
         await locator.blur();
         await expect(this.errorMessage).toHaveText(errorMessage);
     };
-
-    async fieldValidation2(locator: Locator, value: string, errorMessage: string) {
-        if (value) {
-            await locator.fill(value)
-        }
-        else {
-            await locator.focus();
-        }
-        await locator.blur();
-        await expect(this.errorMessage).toHaveText(errorMessage);
-        await expect(this.registerButton).toBeDisabled();
-        await expect(locator).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    };
 }
