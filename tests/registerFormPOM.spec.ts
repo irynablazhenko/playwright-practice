@@ -245,7 +245,6 @@ test.describe('Negative scenario with all invalid fields', () => {
             signUpForm.repeatPasswordField];
         for (let i = 1; i <= 5; i++) {
             await expect(page.locator(`(//form/div/div)[${i}]/p`)).toHaveText(errors[i - 1]);
-            console.log(page.locator(`(//form/div/div)[${i}]/p`));
             await expect(fields[i - 1]).toHaveCSS('border-color', 'rgb(220, 53, 69)');
         }
         await expect(signUpForm.registerButton).toBeDisabled();
