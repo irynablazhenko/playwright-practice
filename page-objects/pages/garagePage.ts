@@ -1,6 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { SignInForm } from '../forms/signInForm';
 import { randomEmail, password } from '../../test-data/credentials';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export class GaragePage {
     readonly page: Page;
@@ -22,7 +25,7 @@ export class GaragePage {
     async open() {
         const signInForm = new SignInForm(this.page);
         await signInForm.open();
-        await signInForm.loginWithCredentials(randomEmail, password);
+        await signInForm.loginWithCredentials(process.env.USER_EMAIL ?? 'test', process.env.USER_PASSWORD ?? 'test');
         await expect(this.page.locator('h1')).toHaveText('Garage');
     };
 

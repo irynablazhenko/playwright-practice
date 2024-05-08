@@ -53,5 +53,6 @@ export class SignUpForm {
         }
         await locator.blur();
         await expect(this.errorMessage).toHaveText(errorMessage);
+        await expect(locator).toHaveCSS('border-color', 'rgb(220, 53, 69)');
     };
 }
