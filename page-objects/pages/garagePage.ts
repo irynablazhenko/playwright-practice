@@ -26,7 +26,9 @@ export class GaragePage {
     readonly saveButton: Locator;
     readonly alert: Locator;
     readonly cancelButton: Locator;
-    
+    readonly deleteFuelExpensesIcon: Locator;
+    readonly removeFuelButton:Locator;
+
 
     constructor(page: Page) {
         this.page = page;
@@ -47,9 +49,11 @@ export class GaragePage {
         this.removeCarButton = page.locator('.btn-outline-danger');
         this.acceptCarRemovingButton = page.locator('.btn-danger');
         this.cars = page.locator('[class="car jumbotron"]');
-        this.saveButton = page.getByText('Save');
+        this.saveButton = page.getByRole('button', { name: 'Save' });
         this.cancelButton = page.getByText('Cancel');
         this.alert = page.locator('[class="alert alert-danger"]');
+        this.deleteFuelExpensesIcon= page.locator('[class="icon icon-delete"]');
+        this.removeFuelButton= page.locator('[class="btn btn-danger"]',{ hasText: 'Remove' });
     };
 
     async open() {
@@ -63,25 +67,29 @@ export class GaragePage {
         await this.addCarButton.click();
     };
 
-    async clickEditCarIcon(){
+    async clickEditCarIcon() {
         await this.editCarIcon.click();
     };
 
-    async clickSaveButton(){
+    async clickSaveButton() {
         await this.saveButton.click();
     };
 
-    async clickCancelButton(){
+    async clickCancelButton() {
         await this.cancelButton.click();
-    }
+    };
+
+    async clickDeleteFuelExpenses(){
+        this.deleteFuelExpensesIcon.click();
+    };
 
     async selectBrand(brand: string) {
-       // await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(1000);
         await this.brandDropdown.selectOption({ label: brand });
     };
 
     async selectModel(model: string) {
-        //await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(1000);
         await this.modelDropdown.selectOption({ label: model });
     };
 
@@ -97,18 +105,21 @@ export class GaragePage {
         return this.firstCarName;
     };
 
-    async fillAddCarForm(brand: string, model: string, mileage: string){
+    async fillAddCarForm(brand: string, model: string, mileage: string) {
         await this.selectBrand(brand);
         await this.selectModel(model);
         await this.enterMileage(mileage);
-        await this.mileageField.blur();
     };
 
-    async AddCar(brand: string, model: string, mileage: string){
-        await this.clickAddCarButton();
-        await this.selectBrand(brand);
-        await this.selectModel(model);
+    async fillEditCarForm(brandId: number, modelId: number, mileage: string) {
+        await this.brandDropdown.selectOption({ index: brandId });;
+        await this.modelDropdown.selectOption({ index: modelId });
         await this.enterMileage(mileage);
+    };
+
+    async AddCar(brand: string, model: string, mileage: string) {
+        await this.clickAddCarButton();
+        await this.fillAddCarForm(brand, model, mileage);
         await this.clickAddButton();
         await expect(this.firstCarName).toHaveText(`${brand} ${model}`);
     };
@@ -119,6 +130,15 @@ export class GaragePage {
         await this.removeCarButton.click();
         await this.acceptCarRemovingButton.click();
         await expect(this.editCarIcon).toHaveCount(carsNumberBefore - 1);
+    };
+
+    async removeLastFuelExpenses(){
+        const rowBefore = await this.page.locator('//tbody/tr').count();
+        await expect(this.deleteFuelExpensesIcon).toBeVisible();
+        await this.clickDeleteFuelExpenses();
+        await this.removeFuelButton.click();
+
+        await expect(this.page.locator('//tbody/tr')).toHaveCount(rowBefore - 1);
     };
 
     async clickSettingsMenu() {
@@ -135,7 +155,7 @@ export class GaragePage {
         await this.removeButton.click();
     };
 
-    async deleteAccount(){
+    async deleteAccount() {
         await this.clickSettingsMenu();
         await this.clickRemoveAccButton();
         await this.clickRemoveButton();
