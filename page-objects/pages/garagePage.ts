@@ -1,6 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { SignInForm } from '../forms/signInForm';
-import { randomEmail, password } from '../../test-data/credentials';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -12,6 +11,22 @@ export class GaragePage {
     readonly removeAccButton: Locator;
     readonly removeAccTitle: Locator;
     readonly removeButton: Locator;
+    readonly emptyGarageMessage: Locator;
+    readonly addCarButton: Locator;
+    readonly brandDropdown: Locator;
+    readonly modelDropdown: Locator;
+    readonly mileageField: Locator;
+    readonly addButton: Locator;
+    readonly firstCarName: Locator;
+    readonly validationError: Locator;
+    readonly editCarIcon: Locator;
+    readonly removeCarButton: Locator;
+    readonly acceptCarRemovingButton: Locator;
+    readonly cars: Locator;
+    readonly saveButton: Locator;
+    readonly alert: Locator;
+    readonly cancelButton: Locator;
+    
 
     constructor(page: Page) {
         this.page = page;
@@ -20,6 +35,21 @@ export class GaragePage {
         this.removeAccButton = page.locator('button', { hasText: 'Remove my account' });
         this.removeAccTitle = page.locator('h4');
         this.removeButton = page.locator('[class="btn btn-danger"]');
+        this.emptyGarageMessage = page.locator('[class="panel-empty_message"]');
+        this.addCarButton = page.getByText('Add car');
+        this.brandDropdown = page.locator('#addCarBrand');
+        this.modelDropdown = page.locator('#addCarModel');
+        this.mileageField = page.locator('#addCarMileage');
+        this.addButton = page.getByText('Add', { exact: true });
+        this.firstCarName = page.locator('.car_name').first();
+        this.validationError = page.locator('[class="invalid-feedback"]');
+        this.editCarIcon = page.locator('.icon-edit').first();
+        this.removeCarButton = page.locator('.btn-outline-danger');
+        this.acceptCarRemovingButton = page.locator('.btn-danger');
+        this.cars = page.locator('[class="car jumbotron"]');
+        this.saveButton = page.getByText('Save');
+        this.cancelButton = page.getByText('Cancel');
+        this.alert = page.locator('[class="alert alert-danger"]');
     };
 
     async open() {
@@ -27,6 +57,68 @@ export class GaragePage {
         await signInForm.open();
         await signInForm.loginWithCredentials(process.env.USER_EMAIL ?? 'test', process.env.USER_PASSWORD ?? 'test');
         await expect(this.page.locator('h1')).toHaveText('Garage');
+    };
+
+    async clickAddCarButton() {
+        await this.addCarButton.click();
+    };
+
+    async clickEditCarIcon(){
+        await this.editCarIcon.click();
+    };
+
+    async clickSaveButton(){
+        await this.saveButton.click();
+    };
+
+    async clickCancelButton(){
+        await this.cancelButton.click();
+    }
+
+    async selectBrand(brand: string) {
+       // await this.page.waitForTimeout(1000);
+        await this.brandDropdown.selectOption({ label: brand });
+    };
+
+    async selectModel(model: string) {
+        //await this.page.waitForTimeout(1000);
+        await this.modelDropdown.selectOption({ label: model });
+    };
+
+    async enterMileage(mileage: string) {
+        await this.mileageField.fill(mileage);
+    };
+
+    async clickAddButton() {
+        await this.addButton.click();
+    };
+
+    async getFirstCarName() {
+        return this.firstCarName;
+    };
+
+    async fillAddCarForm(brand: string, model: string, mileage: string){
+        await this.selectBrand(brand);
+        await this.selectModel(model);
+        await this.enterMileage(mileage);
+        await this.mileageField.blur();
+    };
+
+    async AddCar(brand: string, model: string, mileage: string){
+        await this.clickAddCarButton();
+        await this.selectBrand(brand);
+        await this.selectModel(model);
+        await this.enterMileage(mileage);
+        await this.clickAddButton();
+        await expect(this.firstCarName).toHaveText(`${brand} ${model}`);
+    };
+
+    async removeLastCar() {
+        const carsNumberBefore = await this.page.locator('.icon-edit').count();
+        await this.editCarIcon.click();
+        await this.removeCarButton.click();
+        await this.acceptCarRemovingButton.click();
+        await expect(this.editCarIcon).toHaveCount(carsNumberBefore - 1);
     };
 
     async clickSettingsMenu() {
