@@ -87,5 +87,9 @@ export const test = base.extend({
         await garagePage.clickEditCarIcon();
         await use(garagePage);
         await expect(garagePage.page.locator('h1')).toHaveText('Garage');
+        const carCount = await garagePage.cars.count();
+        if(carCount){
+            await garagePage.removeLastCar();
+        }
     },
 });
