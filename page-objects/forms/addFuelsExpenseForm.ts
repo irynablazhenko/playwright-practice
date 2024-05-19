@@ -1,15 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { GaragePage } from '../pages/garagePage';
 
 export class AddFuelExpenseForm {
     readonly page: Page;
-    // readonly nameField: Locator;
-    // readonly lastNameField: Locator;
-    // readonly emailField: Locator;
-    // readonly passwordField: Locator;
-    // readonly repeatPasswordField: Locator;
-    // readonly registerButton: Locator;
-    // readonly errorMessage: Locator;
     readonly formHeader: Locator;
     readonly vehicleDropdown: Locator;
     readonly expenseMileageField: Locator;
@@ -19,20 +11,10 @@ export class AddFuelExpenseForm {
     readonly cancelButton: Locator;
     readonly addButton: Locator;
     readonly addFuelsExpenseButton: Locator;
-    readonly totalValue:Locator;
-
-    
-    //readonly errorMessages: Locator;
+    readonly totalValue: Locator;
 
     constructor(page: Page) {
         this.page = page;
-        // this.nameField = page.locator('#signupName');
-        // this.lastNameField = page.locator('#signupLastName');
-        // this.emailField = page.locator('#signupEmail');
-        // this.passwordField = page.locator('#signupPassword');
-        // this.repeatPasswordField = page.locator('#signupRepeatPassword');
-        // this.registerButton = page.locator('button', { hasText: 'Register' });
-        // this.errorMessage = page.locator('//form/div/div/p');
         this.formHeader = page.getByRole('heading', { name: 'Add an expense' });
         this.vehicleDropdown = page.locator('#addExpenseCar');
         this.expenseMileageField = page.locator('#addExpenseMileage');
@@ -42,8 +24,8 @@ export class AddFuelExpenseForm {
         this.addButton = page.getByRole('button', { name: 'Add' });
         this.addFuelsExpenseButton = page.locator('[class="car_add-expense btn btn-success"]').first();
         this.totalValue = page.locator('td:nth-child(4)');
-
     };
+
     async open() {
         await this.addFuelsExpenseButton.click();
         await expect(this.formHeader).toBeVisible();
@@ -52,18 +34,16 @@ export class AddFuelExpenseForm {
     async clickAddButton() {
         await this.addButton.click();
         await this.page.waitForTimeout(1000);
-        await expect(this.page.locator('h1')).toHaveText('Fuel expenses');
     };
 
     async clickCancelButton() {
         await this.cancelButton.click();
     };
-   
 
     async selectVehicle(number: number) {
         await this.page.waitForTimeout(1000);
         await this.vehicleDropdown.click();
-        await this.vehicleDropdown.selectOption({index: number});
+        await this.vehicleDropdown.selectOption({ index: number });
     };
 
     async enterMileage(mileage: string) {
@@ -77,7 +57,6 @@ export class AddFuelExpenseForm {
     };
 
     async addFuelExpense(mileage: string, liters: string, total: string) {
-       // await this.selectVehicle(1);
         await this.enterMileage(mileage);
         await this.expenseLiters(liters);
         await this.expenseTotal(total);
@@ -85,15 +64,10 @@ export class AddFuelExpenseForm {
         await expect(this.totalValue).toHaveText(`${total}.00 USD`);
     };
 
-    // async fieldValidation(locator: Locator, value: string, errorMessage: string) {
-    //     if (value) {
-    //         await locator.fill(value)
-    //     }
-    //     else {
-    //         await locator.focus();
-    //     }
-    //     await locator.blur();
-    //     await expect(this.errorMessage).toHaveText(errorMessage);
-    //     await expect(locator).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-    // };
+    async fillAddFuelExpenseForm(mileage: string, liters: string, total: string) {
+        await this.enterMileage(mileage);
+        await this.expenseLiters(liters);
+        await this.expenseTotal(total);
+        await this.clickAddButton();
+    };
 }

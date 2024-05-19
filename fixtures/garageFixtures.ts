@@ -1,9 +1,6 @@
 import { test as base } from '@playwright/test'
 import { expect } from '@playwright/test';
 import { GaragePage } from '../page-objects/pages/garagePage';
-import { EditCarForm } from '../page-objects/forms/editCarForm';
-import { AddFuelExpenseForm } from '../page-objects/forms/addFuelsExpenseForm';
-
 
 export const test = base.extend({
     garagePageAddCar: async ({ page }, use) => {
@@ -25,18 +22,14 @@ export const test = base.extend({
             await expect(garagePage.cars).toHaveCount(carCount + 1);
             await garagePage.removeLastCar();
         };
-
     },
     garagePageEditCar: async ({ page }, use) => {
         let garagePage = new GaragePage(page);
-        let editCarForm = new EditCarForm(page);
 
         await page.goto('/');
         await garagePage.open();
         await garagePage.AddCar('Ford', 'Focus', '1');
         const carName = await garagePage.firstCarName.innerText();
-
-        await garagePage.clickEditCarIcon();
         await page.waitForTimeout(1000);
         await use(garagePage);
 
@@ -47,6 +40,7 @@ export const test = base.extend({
             }
             else {
                 await garagePage.clickCancelButton();
+                await garagePage.removeLastCar();
             }
         }
         else {
@@ -58,16 +52,40 @@ export const test = base.extend({
             expect(garagePage.firstCarName.innerText()).not.toEqual(carName);
             await garagePage.removeLastCar();
         };
-
     },
     garagePageAddFuelExpense: async ({ page }, use) => {
         let garagePage = new GaragePage(page);
-        let addFuelExpenseForm = new AddFuelExpenseForm(page);
         await page.goto('/');
         await garagePage.open();
-        await garagePage.AddCar('Ford', 'Focus', '100');
-        await addFuelExpenseForm.open();
-        await use(addFuelExpenseForm);
-        await garagePage.removeLastFuelExpenses();
+        await use(garagePage);
+        await expect(garagePage.fuelErrorMessage).toHaveText('First expense mileage must not be less or equal to car initial mileage. Car initial mileage is 1');
+        await garagePage.clickFuelCancelButton();
+        await expect(garagePage.page.locator('h1')).toHaveText('Garage');
+        await garagePage.removeLastCar();
+        // await garagePage.removeLastFuelExpenses();
+    },
+    garagePageUpdateMileages: async ({ page }, use) => {
+        let garagePage = new GaragePage(page);garagePage
+        await page.goto('/');
+        await garagePage.open();
+        await garagePage.AddCar('Ford', 'Focus', '1');
+        await garagePage.miles.click();
+        await use(garagePage);
+        if (await garagePage.updateMileagesButton.isDisabled()) {
+
+        } else {
+            await garagePage.clickUpdateMileagesButton();
+            await expect(garagePage.popupMessage).toHaveText('Mileage updated');
+        }
+        await garagePage.removeLastCar();
+    },
+    garagePageDeleteCar: async ({ page }, use) => {
+        let garagePage = new GaragePage(page);
+        await page.goto('/');
+        await garagePage.open();
+        await garagePage.AddCar('Ford', 'Focus', '1');
+        await garagePage.clickEditCarIcon();
+        await use(garagePage);
+        await expect(garagePage.page.locator('h1')).toHaveText('Garage');
     },
 });
