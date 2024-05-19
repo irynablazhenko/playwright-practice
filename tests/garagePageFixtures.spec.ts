@@ -33,15 +33,22 @@ test.describe('Garage tests', () => {
         test('Cancel edit form without changes', async ({ garagePageEditCar }) => {
             await garagePageEditCar.clickEditCarIcon();
         });
-
     });
 
     test.describe('Add fuel expense tests', () => {
 
-        test('Negative adding FuelExpense when the miles doesn"t change', async ({ garagePageAddFuelExpense }) => {
-            await garagePageAddFuelExpense.AddCar('Ford', 'Focus', '1');
+        test('The fuel expenses can be added', async ({ garagePageAddFuelExpense }) => {
+            let miles = await garagePageAddFuelExpense.miles.inputValue();
+            let newNum = Number(miles);
+            newNum += 5;
             await garagePageAddFuelExpense.clickAddFuelExpenses();
-            await garagePageAddFuelExpense.fillAddFuelExpenseForm('1', '3', '500');
+            await garagePageAddFuelExpense.page.waitForTimeout(2000);
+            await garagePageAddFuelExpense.fillAddFuelExpenseForm(newNum.toString(), '3', '500');
+        });
+
+        test('Negative adding FuelExpense when the miles doesn"t change', async ({ garagePageAddFuelExpense }) => {
+            await garagePageAddFuelExpense.clickAddFuelExpenses();
+            await garagePageAddFuelExpense.fillAddFuelExpenseForm('1', '3', '250');
         });
     });
 
@@ -62,8 +69,9 @@ test.describe('Garage tests', () => {
             const carsNumberBefore = await garagePageDeleteCar.page.locator('.icon-edit').count();
             await garagePageDeleteCar.removeCarButton.click();
             await garagePageDeleteCar.acceptCarRemovingButton.click();
-            await expect(garagePageDeleteCar.popupMessage).toHaveText('Car removed');
+            await garagePageDeleteCar.page.waitForTimeout(3000);
             await expect(garagePageDeleteCar.editCarIcon).toHaveCount(carsNumberBefore - 1);
+            await expect(garagePageDeleteCar.popupMessage).toHaveText('Car removed');
         });
 
         test('Negative. Click Cancel removing', async ({ garagePageDeleteCar }) => {

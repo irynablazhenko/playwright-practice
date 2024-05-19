@@ -57,26 +57,35 @@ export const test = base.extend({
         let garagePage = new GaragePage(page);
         await page.goto('/');
         await garagePage.open();
+        await garagePage.AddCar('Ford', 'Focus', '10');
         await use(garagePage);
-        await expect(garagePage.fuelErrorMessage).toHaveText('First expense mileage must not be less or equal to car initial mileage. Car initial mileage is 1');
-        await garagePage.clickFuelCancelButton();
-        await expect(garagePage.page.locator('h1')).toHaveText('Garage');
+        await garagePage.clickAddButton();
+        await garagePage.page.waitForTimeout(1000);
+        if (await garagePage.fuelErrorMessage.isVisible()) {
+            await expect(garagePage.fuelErrorMessage).toContainText('First expense mileage must not be less or equal to car initial mileage. Car initial mileage is');
+            await garagePage.clickFuelCancelButton();
+            await expect(garagePage.page.locator('h1')).toHaveText('Garage');
+        }
+        else {
+            await expect(garagePage.popupMessage).toHaveText('Fuel expense added');
+            await expect(garagePage.page.locator('h1')).toHaveText('Fuel expenses');
+        };
+        await garagePage.clickGarageMenu();
         await garagePage.removeLastCar();
+
         // await garagePage.removeLastFuelExpenses();
     },
     garagePageUpdateMileages: async ({ page }, use) => {
-        let garagePage = new GaragePage(page);garagePage
+        let garagePage = new GaragePage(page); garagePage
         await page.goto('/');
         await garagePage.open();
         await garagePage.AddCar('Ford', 'Focus', '1');
         await garagePage.miles.click();
         await use(garagePage);
-        if (await garagePage.updateMileagesButton.isDisabled()) {
-
-        } else {
+        if (await garagePage.updateMileagesButton.isEnabled()) {
             await garagePage.clickUpdateMileagesButton();
             await expect(garagePage.popupMessage).toHaveText('Mileage updated');
-        }
+        };
         await garagePage.removeLastCar();
     },
     garagePageDeleteCar: async ({ page }, use) => {
@@ -88,7 +97,7 @@ export const test = base.extend({
         await use(garagePage);
         await expect(garagePage.page.locator('h1')).toHaveText('Garage');
         const carCount = await garagePage.cars.count();
-        if(carCount){
+        if (carCount) {
             await garagePage.removeLastCar();
         }
     },

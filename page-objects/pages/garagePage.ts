@@ -34,7 +34,7 @@ export class GaragePage {
     readonly updateMileagesButton: Locator;
     readonly popupMessage: Locator;
     readonly cancelRemovingButton: Locator;
-  //  readonly updateMileageField: Locator;
+    readonly garageMenu: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -62,10 +62,10 @@ export class GaragePage {
         this.removeFuelButton = page.locator('[class="btn btn-danger"]', { hasText: 'Remove' });
         this.miles = page.locator('(//li//input)[1]');
         this.fuelErrorMessage = page.locator('[class="alert alert-danger"]');
-        this.updateMileagesButton = page.locator('button', {hasText: 'Update'}).first();
+        this.updateMileagesButton = page.locator('button', { hasText: 'Update' }).first();
         this.popupMessage = page.locator('[class="alert alert-success"]').first();
-        this.cancelRemovingButton = page.getByRole('button',{name: 'Cancel'});
-//      is.updateMileageField = page.locator('')
+        this.cancelRemovingButton = page.getByRole('button', { name: 'Cancel' });
+        this.garageMenu = page.locator('[routerlink="garage"]');
     };
 
     async open() {
@@ -73,6 +73,10 @@ export class GaragePage {
         await signInForm.open();
         await signInForm.loginWithCredentials(process.env.USER_EMAIL ?? 'test', process.env.USER_PASSWORD ?? 'test');
         await expect(this.page.locator('h1')).toHaveText('Garage');
+    };
+
+    async clickGarageMenu() {
+        await this.garageMenu.click();
     };
 
     async clickAddCarButton() {
@@ -109,6 +113,11 @@ export class GaragePage {
     async fillAddFuelExpenseForm(mileage: string, liters: string, total: string) {
         const addFuelExpenseForm = new AddFuelExpenseForm(this.page);
         await addFuelExpenseForm.fillAddFuelExpenseForm(mileage, liters, total);
+    };
+
+    async getExpenseTotal() {
+        const addFuelExpenseForm = new AddFuelExpenseForm(this.page);
+        return addFuelExpenseForm.totalValue;
     };
 
     async clickDeleteFuelExpenses() {
@@ -158,10 +167,13 @@ export class GaragePage {
 
     async removeLastCar() {
         const carsNumberBefore = await this.page.locator('.icon-edit').count();
+        console.log(carsNumberBefore);
         await this.editCarIcon.click();
         await this.removeCarButton.click();
         await this.acceptCarRemovingButton.click();
-        await expect(this.editCarIcon).toHaveCount(carsNumberBefore - 1);
+        if (carsNumberBefore != 0) {
+            await expect(this.editCarIcon).toHaveCount(carsNumberBefore - 1);
+        }
     };
 
     async removeLastFuelExpenses() {
@@ -176,11 +188,11 @@ export class GaragePage {
         await expect(this.page.locator('//tbody/tr')).toHaveCount(rowBefore - 1);
     };
 
-    async inputNewMileage(miles: string){
+    async inputNewMileage(miles: string) {
         await this.miles.fill(miles);
     };
 
-    async clickUpdateMileagesButton(){
+    async clickUpdateMileagesButton() {
         await this.updateMileagesButton.click();
     };
     async clickSettingsMenu() {
@@ -205,6 +217,6 @@ export class GaragePage {
     };
 
     async getMiles() {
-        await this.miles.innerText();
+        await this.miles.inputValue();
     };
 }

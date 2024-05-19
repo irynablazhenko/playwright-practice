@@ -49,9 +49,11 @@ export class AddFuelExpenseForm {
     async enterMileage(mileage: string) {
         await this.expenseMileageField.fill(mileage);
     };
+
     async expenseLiters(liters: string) {
         return this.expenseLitersField.fill(liters);
     };
+    
     async expenseTotal(total: string) {
         return this.expenseTotalField.fill(total);
     };
@@ -68,6 +70,5 @@ export class AddFuelExpenseForm {
         await this.enterMileage(mileage);
         await this.expenseLiters(liters);
         await this.expenseTotal(total);
-        await this.clickAddButton();
     };
 }
