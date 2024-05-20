@@ -166,8 +166,7 @@ export class GaragePage {
     };
 
     async removeLastCar() {
-        const carsNumberBefore = await this.page.locator('.icon-edit').count();
-        console.log(carsNumberBefore);
+       const carsNumberBefore = await this.page.locator('.icon-edit').count();
         await this.editCarIcon.click();
         await this.removeCarButton.click();
         await this.acceptCarRemovingButton.click();

@@ -42,13 +42,13 @@ export class AddFuelExpenseForm {
 
     async selectVehicle(number: number) {
         await this.page.waitForTimeout(1000);
-    //    await this.vehicleDropdown.click();
+        await this.vehicleDropdown.click();
         await this.vehicleDropdown.selectOption({ index: number });
     };
 
     async selectVehicleModel(model: string) {
         await this.page.waitForTimeout(1000);
-     //   await this.vehicleDropdown.click();
+        await this.vehicleDropdown.click();
         await this.vehicleDropdown.selectOption({ label: model });
     };
     async enterMileage(mileage: string) {

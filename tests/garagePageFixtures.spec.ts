@@ -2,6 +2,23 @@ import { expect } from '@playwright/test';
 import { test } from '../fixtures/garageFixtures';
 
 test.describe('Garage tests', () => {
+    test.describe('Add fuel expense tests', () => {
+
+        test('The fuel expenses can be added', async ({ garagePageAddFuelExpense }) => {
+            let miles = await garagePageAddFuelExpense.miles.inputValue();
+            let newNum = Number(miles);
+            newNum += 5;
+            await garagePageAddFuelExpense.clickAddFuelExpenses();
+            await garagePageAddFuelExpense.page.waitForTimeout(2000);
+            await garagePageAddFuelExpense.fillAddFuelExpenseForm(0, newNum.toString(), '3', '500');
+        });
+
+        test('Negative adding FuelExpense when the miles doesn"t change', async ({ garagePageAddFuelExpense }) => {
+            await garagePageAddFuelExpense.clickAddFuelExpenses();
+            await garagePageAddFuelExpense.page.waitForTimeout(2000);
+            await garagePageAddFuelExpense.fillAddFuelExpenseForm(0,'1', '3', '250');
+        });
+    });
 
     test.describe('Add car to the garage validation', () => {
 
@@ -35,22 +52,7 @@ test.describe('Garage tests', () => {
         });
     });
 
-    test.describe('Add fuel expense tests', () => {
 
-        test('The fuel expenses can be added', async ({ garagePageAddFuelExpense }) => {
-            let miles = await garagePageAddFuelExpense.miles.inputValue();
-            let newNum = Number(miles);
-            newNum += 5;
-            await garagePageAddFuelExpense.clickAddFuelExpenses();
-            await garagePageAddFuelExpense.page.waitForTimeout(2000);
-            await garagePageAddFuelExpense.fillAddFuelExpenseForm(1, newNum.toString(), '3', '500');
-        });
-
-        test('Negative adding FuelExpense when the miles doesn"t change', async ({ garagePageAddFuelExpense }) => {
-            await garagePageAddFuelExpense.clickAddFuelExpenses();
-            await garagePageAddFuelExpense.fillAddFuelExpenseForm(1,'1', '3', '250');
-        });
-    });
 
     test.describe('Update mileages tests', () => {
 
@@ -66,8 +68,9 @@ test.describe('Garage tests', () => {
     test.describe('Delete car tests', () => {
 
         test('The car can be deleted', async ({ garagePageDeleteCar }) => {
-            const carsNumberBefore = await garagePageDeleteCar.page.locator('.icon-edit').count();
+           const carsNumberBefore = await garagePageDeleteCar.page.locator('.icon-edit').count();
             await garagePageDeleteCar.removeCarButton.click();
+            await garagePageDeleteCar.page.waitForTimeout(3000);
             await garagePageDeleteCar.acceptCarRemovingButton.click();
             await garagePageDeleteCar.page.waitForTimeout(3000);
             await expect(garagePageDeleteCar.editCarIcon).toHaveCount(carsNumberBefore - 1);
@@ -75,8 +78,10 @@ test.describe('Garage tests', () => {
         });
 
         test('Negative. Click Cancel removing', async ({ garagePageDeleteCar }) => {
+            const carsNumberBefore = await garagePageDeleteCar.page.locator('.icon-edit').count();
             await garagePageDeleteCar.removeCarButton.click();
             await garagePageDeleteCar.cancelRemovingButton.click();
+            await expect(garagePageDeleteCar.editCarIcon).toHaveCount(carsNumberBefore);
         });
     });
 });
