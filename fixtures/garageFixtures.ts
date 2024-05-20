@@ -84,6 +84,7 @@ export const test = base.extend({
         await use(garagePage);
         if (await garagePage.updateMileagesButton.isEnabled()) {
             await garagePage.clickUpdateMileagesButton();
+            await garagePage.page.waitForTimeout(2000);
             await expect(garagePage.popupMessage).toHaveText('Mileage updated');
         };
         await garagePage.removeLastCar();

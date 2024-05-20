@@ -110,9 +110,9 @@ export class GaragePage {
         await addFuelExpenseForm.addFuelExpense(mileage, liters, total);
     };
 
-    async fillAddFuelExpenseForm(mileage: string, liters: string, total: string) {
+    async fillAddFuelExpenseForm(position: number, mileage: string, liters: string, total: string) {
         const addFuelExpenseForm = new AddFuelExpenseForm(this.page);
-        await addFuelExpenseForm.fillAddFuelExpenseForm(mileage, liters, total);
+        await addFuelExpenseForm.fillAddFuelExpenseForm(position, mileage, liters, total);
     };
 
     async getExpenseTotal() {

@@ -42,10 +42,15 @@ export class AddFuelExpenseForm {
 
     async selectVehicle(number: number) {
         await this.page.waitForTimeout(1000);
-        await this.vehicleDropdown.click();
+     //   await this.vehicleDropdown.click();
         await this.vehicleDropdown.selectOption({ index: number });
     };
 
+    async selectVehicleModel(model: string) {
+        await this.page.waitForTimeout(1000);
+        await this.vehicleDropdown.click();
+        await this.vehicleDropdown.selectOption({ label: model });
+    };
     async enterMileage(mileage: string) {
         await this.expenseMileageField.fill(mileage);
     };
@@ -66,7 +71,8 @@ export class AddFuelExpenseForm {
         await expect(this.totalValue).toHaveText(`${total}.00 USD`);
     };
 
-    async fillAddFuelExpenseForm(mileage: string, liters: string, total: string) {
+    async fillAddFuelExpenseForm(position: number,  mileage: string, liters: string, total: string) {
+        await this.selectVehicle(position);
         await this.enterMileage(mileage);
         await this.expenseLiters(liters);
         await this.expenseTotal(total);

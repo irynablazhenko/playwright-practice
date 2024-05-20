@@ -43,12 +43,12 @@ test.describe('Garage tests', () => {
             newNum += 5;
             await garagePageAddFuelExpense.clickAddFuelExpenses();
             await garagePageAddFuelExpense.page.waitForTimeout(2000);
-            await garagePageAddFuelExpense.fillAddFuelExpenseForm(newNum.toString(), '3', '500');
+            await garagePageAddFuelExpense.fillAddFuelExpenseForm(1, newNum.toString(), '3', '500');
         });
 
         test('Negative adding FuelExpense when the miles doesn"t change', async ({ garagePageAddFuelExpense }) => {
             await garagePageAddFuelExpense.clickAddFuelExpenses();
-            await garagePageAddFuelExpense.fillAddFuelExpenseForm('1', '3', '250');
+            await garagePageAddFuelExpense.fillAddFuelExpenseForm(1,'1', '3', '250');
         });
     });
 
