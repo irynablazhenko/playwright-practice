@@ -41,10 +41,26 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: 'setup',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '*setup/*.spec.ts'
+    },
+
+    {
+      name: 'storageState',
+      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup']
+    },
+
+    {
+      name: 'sessionStorage',
       use: { ...devices['Desktop Chrome'] },
     },
 
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },

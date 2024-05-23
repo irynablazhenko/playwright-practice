@@ -35,6 +35,7 @@ export class GaragePage {
     readonly popupMessage: Locator;
     readonly cancelRemovingButton: Locator;
     readonly garageMenu: Locator;
+    readonly carName: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -66,13 +67,18 @@ export class GaragePage {
         this.popupMessage = page.locator('[class="alert alert-success"]').first();
         this.cancelRemovingButton = page.getByRole('button', { name: 'Cancel' });
         this.garageMenu = page.locator('[routerlink="garage"]');
+        this.carName = page.locator('[class="car_name h2"]');
     };
 
-    async open() {
+    async openAsLoggedUser() {
         const signInForm = new SignInForm(this.page);
         await signInForm.open();
         await signInForm.loginWithCredentials(process.env.USER_EMAIL ?? 'test', process.env.USER_PASSWORD ?? 'test');
         await expect(this.page.locator('h1')).toHaveText('Garage');
+    };
+
+    async open() {
+        await this.page.goto('/panel/garage');
     };
 
     async clickGarageMenu() {
@@ -158,6 +164,16 @@ export class GaragePage {
         await this.enterMileage(mileage);
     };
 
+    async editCar(brand: string, model: string, mileage: string) {
+        await this.clickEditCarIcon();
+        await this.selectBrand(brand);
+        await this.selectModel(model);
+        await this.enterMileage(mileage);
+        await this.clickSaveButton();
+        await this.page.waitForTimeout(1000);
+        await expect(this.popupMessage).toHaveText('Car updated');
+    };
+
     async AddCar(brand: string, model: string, mileage: string) {
         await this.clickAddCarButton();
         await this.fillAddCarForm(brand, model, mileage);
@@ -172,7 +188,7 @@ export class GaragePage {
         await this.acceptCarRemovingButton.click();
         if (carsNumberBefore != 0) {
             await expect(this.editCarIcon).toHaveCount(carsNumberBefore - 1);
-        }
+        };
     };
 
     async removeLastFuelExpenses() {

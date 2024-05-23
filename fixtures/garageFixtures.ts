@@ -3,11 +3,11 @@ import { expect } from '@playwright/test';
 import { GaragePage } from '../page-objects/pages/garagePage';
 
 export const test = base.extend({
+    
     //fixture for add car to the garage.
     garagePageAddCar: async ({ page }, use) => {
         let garagePage = new GaragePage(page);
         //Pre-conditions: be on Garage page and Click on Add Car Button
-        await page.goto('/');
         await garagePage.open();
         //cars count in the garage
         const carCount = await garagePage.cars.count();
@@ -36,7 +36,6 @@ export const test = base.extend({
         //fixture for editing car. 
         let garagePage = new GaragePage(page);
         //Pre-conditions: be on Garage page, add new car Button to the garage.
-        await page.goto('/');
         await garagePage.open();
         await garagePage.AddCar('Ford', 'Focus', '1');
         //Save the car name for comparison after edition. 
@@ -73,7 +72,6 @@ export const test = base.extend({
     garagePageAddFuelExpense: async ({ page }, use) => {
         let garagePage = new GaragePage(page);
         //Pre-conditions: be on Garage page, add new car Button to the garage.
-        await page.goto('/');
         await garagePage.open();
         await garagePage.AddCar('Ford', 'Focus', '10');
         await use(garagePage);
@@ -99,7 +97,6 @@ export const test = base.extend({
     garagePageUpdateMileages: async ({ page }, use) => {
         let garagePage = new GaragePage(page); garagePage
         //Pre-conditions: be on Garage page, add new car Button to the garage, click on miles  field.
-        await page.goto('/');
         await garagePage.open();
         await garagePage.AddCar('Ford', 'Focus', '1');
         await garagePage.miles.click();
@@ -116,7 +113,6 @@ export const test = base.extend({
     garagePageDeleteCar: async ({ page }, use) => {
         let garagePage = new GaragePage(page);
         //Pre-conditions: be on Garage page and add new car Button to the garage. Click on Edit car button
-        await page.goto('/');
         await garagePage.open();
         await garagePage.AddCar('Ford', 'Focus', '1');
         await garagePage.clickEditCarIcon();

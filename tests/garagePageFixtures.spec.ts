@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { test } from '../fixtures/garageFixtures';
 
 test.describe('Garage tests', () => {
+    test.use({storageState: './test-data/states/userState.json'});
+
     test.describe('Add fuel expense tests', () => {
 
         test('The fuel expenses can be added', async ({ garagePageAddFuelExpense }) => {
