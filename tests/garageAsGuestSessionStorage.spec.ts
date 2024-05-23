@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { GaragePage } from '../page-objects/pages/garagePage';
-import exp from 'constants';
 
 test.describe('Garage tests as Guest user', () => {
     let garagePage: GaragePage;
