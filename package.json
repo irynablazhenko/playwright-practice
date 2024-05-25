@@ -8,6 +8,7 @@
     "test:storageState": "npx playwright test --project=storageState garagePageFixtures.spec.ts --headed",
     "test:sessionStorage": "npx playwright test --project=sessionStorage garageAsGuestSessionStorage.spec.ts --ui",
     "test:ui": "npx playwright test --project=chromium --ui",
+    "test:run-api": "npx playwright test --project=api-tests --ui",
     "report": "npx playwright show-report",
     "test": "npx playwright test --project=chromium"
   },
