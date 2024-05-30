@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import dotenv from 'dotenv';
-import { GaragePage } from '../page-objects/pages/garagePage';
-import { SignUpForm } from '../page-objects/forms/signUpForm';
+import { GaragePage } from '../../page-objects/pages/garagePage';
+import { SignUpForm } from '../../page-objects/forms/signUpForm';
 
 dotenv.config();
 

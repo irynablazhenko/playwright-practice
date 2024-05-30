@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { getMailWithSubjectAndRecipient } from '../../utils/gmail';
+import { getMailWithSubjectAndRecipient } from '../../../utils/gmail';
 
 test('Parse code from email', async ({ page }) => {
     await page.goto('https://demo.playwright.dev/todomvc/#/');

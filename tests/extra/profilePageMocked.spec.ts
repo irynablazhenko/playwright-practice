@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { GaragePage } from '../page-objects/pages/garagePage';
+import { GaragePage } from '../../page-objects/pages/garagePage';
 
 test.describe('Garage tests with mocking API', () => {
     let garagePage: GaragePage;

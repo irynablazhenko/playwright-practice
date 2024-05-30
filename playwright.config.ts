@@ -47,24 +47,24 @@ export default defineConfig({
     },
 
     {
-      name: 'storageState',
+      name: 'ui-tests',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup']
+      testMatch: 'tests/*.spec.ts',
+      dependencies: ['setup','api-preconditions']
     },
 
-    {
-      name: 'sessionStorage',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
     {
       name: 'api-tests',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: '*api/*.spec.ts'
+      testMatch: '*api/*.spec.ts',
+      dependencies: ['api-preconditions']
+
+    },
+    {
+      name: 'api-preconditions',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '*preconditions/*.spec.ts'
+
     },
     // {
     //   name: 'firefox',
