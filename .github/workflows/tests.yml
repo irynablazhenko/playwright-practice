@@ -25,3 +25,7 @@ jobs:
     - name: Run tests
       run: |
         docker run pw-tests:1
+      env:
+        BASE_URL: ${{ secrets.BASE_URL }}
+        HTTP_USER_NAME: ${{ secrets.HTTP_USER_NAME }}
+        HTTP_PASSWORD: ${{ secrets.HTTP_PASSWORD }}
