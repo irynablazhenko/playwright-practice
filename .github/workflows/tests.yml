@@ -30,4 +30,4 @@ jobs:
         USER_EMAIL: ${{ secrets.USER_EMAIL }}
         USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
       run: |
-        docker run -e BASE_URL ='${{ secrets.BASE_URL }}'  -e HTTP_USER_NAME ='${{ secrets.HTTP_USER_NAME }}'  -e HTTP_PASSWORD ='${{ secrets.HTTP_PASSWORD }}'  -e  USER_EMAIL ='${{ secrets.USER_EMAIL }}' -e  USER_PASSWORD ='${{ secrets.USER_PASSWORD }}' pw-tests:1
+        docker run -e BASE_URL ="${ secrets.BASE_URL }"  -e HTTP_USER_NAME ="${ secrets.HTTP_USER_NAME }"  -e HTTP_PASSWORD ="${ secrets.HTTP_PASSWORD }"  -e  USER_EMAIL ="${ secrets.USER_EMAIL }" -e  USER_PASSWORD ="${ secrets.USER_PASSWORD }" pw-tests:1
