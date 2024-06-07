@@ -43,23 +43,28 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Download Playwright report artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: playwright-report
-          path: out
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact to Pages
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: out
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: peaceiris/actions-gh-pages@v2
-        env:
-          PERSONAL_TOKEN: ${{secrets.TOKEN}}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: playwright-report
+
+  deploy:
+        if: ${{ always() }}
+        runs-on: ubuntu-latest
+        needs: test
+        permissions:
+          pages: write
+          id-token: write
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+          - name: Download Playwright report artifact
+            uses: actions/download-artifact@v4
+            with:
+              name: playwright-report
+              path: out
+          - name: Setup Pages
+            uses: actions/configure-pages@v3
+          - name: Upload artifact to Pages
+            uses: actions/upload-pages-artifact@v1
+            with:
+              path: out
+          - name: Deploy to GitHub Pages
+            id: deployment
+            uses: actions/deploy-pages@v1
