@@ -6,4 +6,4 @@ node_modules/
 /playwright/.cache/
 Lessons/
 .env
-/testsDocker.yml
+.github/workflows/testsDocker.yml
