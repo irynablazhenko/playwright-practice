@@ -1,33 +1,41 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: "Test suite to run"
+        required: true
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    
     steps:
-    
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Build Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: Dockerfile
-        push: false
-        tags: pw-tests:1
-        
-    - name: Run tests
-      env:
-        BASE_URL: ${{ secrets.BASE_URL }}
-        HTTP_USER_NAME: ${{ secrets.HTTP_USER_NAME }}
-        HTTP_PASSWORD: ${{ secrets.HTTP_PASSWORD }}
-        USER_EMAIL: ${{ secrets.USER_EMAIL }}
-        USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
-      run: |
-        docker run -e BASE_URL="${BASE_URL}" -e HTTP_USER_NAME="${HTTP_USER_NAME}" -e HTTP_PASSWORD="${HTTP_PASSWORD}" -e USER_EMAIL="${USER_EMAIL}" -e USER_PASSWORD="${USER_PASSWORD}" pw-tests:1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        env:
+            BASE_URL: ${{ secrets.BASE_URL }}
+            HTTP_USER_NAME: ${{ secrets.HTTP_USER_NAME }}
+            HTTP_PASSWORD: ${{ secrets.HTTP_PASSWORD }}
+            USER_EMAIL: ${{ secrets.USER_EMAIL }}
+            USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+        run: BASE_URL="${BASE_URL}" HTTP_USER_NAME="${HTTP_USER_NAME}" HTTP_PASSWORD="${HTTP_PASSWORD}" USER_EMAIL="${USER_EMAIL}" USER_PASSWORD="${USER_PASSWORD}" npx playwright test ${{ inputs.test_suite }}
+      - name: Upload Playwright report artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
