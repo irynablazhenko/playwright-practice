@@ -31,7 +31,7 @@ jobs:
             HTTP_PASSWORD: ${{ secrets.HTTP_PASSWORD }}
             USER_EMAIL: ${{ secrets.USER_EMAIL }}
             USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
-        run: BASE_URL="${BASE_URL}" HTTP_USER_NAME="${HTTP_USER_NAME}" HTTP_PASSWORD="${HTTP_PASSWORD}" USER_EMAIL="${USER_EMAIL}" USER_PASSWORD="${USER_PASSWORD}" npx playwright test ${{ inputs.test_suite }}
+        run: BASE_URL="${BASE_URL}" HTTP_USER_NAME="${HTTP_USER_NAME}" HTTP_PASSWORD="${HTTP_PASSWORD}" USER_EMAIL="${USER_EMAIL}" USER_PASSWORD="${USER_PASSWORD}" npx playwright test --project=ui-tests ${{ inputs.test_suite }}
       - name: Upload Playwright report artifact
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
