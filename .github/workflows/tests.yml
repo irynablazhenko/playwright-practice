@@ -9,7 +9,7 @@ on:
     inputs:
       test_params:
         description: "Enter test parameters"
-        required: false
+        required: true
        
 jobs:
   test:
